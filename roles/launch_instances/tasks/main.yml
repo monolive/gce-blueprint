@@ -1,0 +1,24 @@
+---
+  - include_vars: gce_credential.yml
+
+  - name: launch google instances
+    local_action: gce instance_names={{names}} machine_type={{machine_type}}
+                    image={{image}} zone={{zone}} service_account_email={{ service_account_email }}
+                    pem_file={{ pem_file }} project_id={{ project_id }}
+    register: gce
+
+  - debug: var=gce
+
+  - name: create & attach disk
+    local_action: gce_pd disk_type={{disk_type}} instance_name={{ item }} mode=READ_WRITE name={{item}}pd size_gb={{size_gb}}
+                    zone={{zone}} service_account_email={{ service_account_email }} pem_file={{ pem_file }} project_id={{ project_id }}
+    with_items: "{{gce.instance_names}}"
+
+  - name: Wait for SSH to come up
+    local_action: wait_for host={{item.public_ip}} port=22 delay=10
+                    timeout=60 state=started
+    with_items: "{{gce.instance_data}}"
+
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=gcehosts
+    with_items: "{{gce.instance_data}}"

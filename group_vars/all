@@ -1,0 +1,11 @@
+# GCE info
+# pem_file, project_id, service_account_email are available in vars/gce_credential
+# need to include var file in task, vars/gce_credential is encrypted
+names : gateway,master1
+machine_type: n1-standard-1
+image : centos-6-v20150818
+zone : europe-west1-b
+
+# Disk information
+disk_type : pd-standard # choices are pd-standard or pd-ssd
+size_gb : 10

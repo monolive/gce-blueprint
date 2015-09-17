@@ -1,0 +1,11 @@
+---
+  - hosts: control_node
+    gather_facts: false
+    roles:
+      - launch_instances
+
+  - hosts: gcehosts
+    gather_facts: true
+    user: orenault
+    roles:
+      - prepare_instances

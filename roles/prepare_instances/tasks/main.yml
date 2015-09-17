@@ -1,0 +1,6 @@
+---
+  - name: Create xfs filesystem
+    filesystem: fstype=xfs  dev=/dev/sdb opts="-f -l size=128m,lazy-count=1 -d su=512k,sw=6 -r extsize=256k"
+
+  - name: mount FS and add it to fstab
+    mount: name=/hadoop/1 src=/dev/sdb fstype=xfs state=present opts="allocsize=128k,noatime,nobarrier,inode64,nodev"
